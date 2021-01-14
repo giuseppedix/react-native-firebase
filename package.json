@@ -1,5 +1,5 @@
 {
-  "name": "react-native-firebase-messaging",
+  "name": "@react-native-firebase/messaging",
   "version": "1.0.0",
   "author": "Giuseppe Disimino",
   "description": "React Native Firebase Messaging",
