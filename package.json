@@ -1,8 +1,8 @@
 {
-  "name": "@react-native-firebase/messaging",
-  "version": "10.4.1",
-  "author": "Invertase <oss@invertase.io> (http://invertase.io)",
-  "description": "React Native Firebase - React Native Firebase provides native integration of Firebase Cloud Messaging (FCM) for both Android & iOS. FCM is a cost free service, allowing for server-device and device-device communication. The React Native Firebase Messaging module provides a simple JavaScript API to interact with FCM.",
+  "name": "react-native-firebase-messaging",
+  "version": "1.0.0",
+  "author": "Giuseppe Disimino",
+  "description": "React Native Firebase Messaging",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/invertase/react-native-firebase/tree/master/packages/messaging"
+    "url": "https://github.com/giuseppedix/react-native-firebase-messaging.git"
   },
   "license": "Apache-2.0",
   "keywords": [
