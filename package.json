@@ -5,10 +5,6 @@
   "description": "React Native Firebase Messaging",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "scripts": {
-    "build": "genversion --semi lib/version.js",
-    "build:clean": "rimraf android/build && rimraf ios/build",
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/giuseppedix/react-native-firebase-messaging.git"
