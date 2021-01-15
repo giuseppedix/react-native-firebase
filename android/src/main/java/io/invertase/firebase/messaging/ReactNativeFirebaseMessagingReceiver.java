@@ -4,11 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 
 import com.facebook.react.HeadlessJsTaskService;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.HashMap;
@@ -43,18 +41,18 @@ public class ReactNativeFirebaseMessagingReceiver extends BroadcastReceiver {
     //   ------------------------
     if (SharedUtils.isAppInForeground(context)) {
       Log.d(TAG, "broadcast received for message: APP IN FOREGROUND");
-      emitter.sendEvent(ReactNativeFirebaseMessagingSerializer.remoteMessageToEvent(remoteMessage, false));
       String notifDataType = remoteMessage.getData().get("notificationType");
       String startCallType="MEETING_START";
       String disconnectCallType="calldisconnected";
       Log.d(TAG, "broadcast received for message: " + notifDataType);
       if(startCallType.equals(notifDataType)) {
         try {
-          this.sendWakeUpIntent(context, remoteMessage);
+          this.sendWakeUpIntent(context, remoteMessage, Intent.FLAG_ACTIVITY_NEW_TASK);
         } catch (ClassNotFoundException e) {
           e.printStackTrace();
         }
       }
+      emitter.sendEvent(ReactNativeFirebaseMessagingSerializer.remoteMessageToEvent(remoteMessage, false));
       return;
     }
 
@@ -69,15 +67,14 @@ public class ReactNativeFirebaseMessagingReceiver extends BroadcastReceiver {
       String disconnectCallType="calldisconnected";
       Log.d(TAG, "broadcast received for message: " + notifDataType);
       if(startCallType.equals(notifDataType)) {
-        this.sendWakeUpIntent(context, remoteMessage);
-      } else {
+        this.sendWakeUpIntent(context, remoteMessage, Intent.FLAG_ACTIVITY_NEW_TASK);
+      }
         Intent backgroundIntent = new Intent(context, ReactNativeFirebaseMessagingHeadlessService.class);
         backgroundIntent.putExtra("message", remoteMessage);
         ComponentName name = context.startService(backgroundIntent);
         if (name != null) {
           HeadlessJsTaskService.acquireWakeLockNow(context);
         }
-      }
     } catch (IllegalStateException | ClassNotFoundException ex) {
       // By default, data only messages are "default" priority and cannot trigger Headless tasks
       Log.e(
@@ -88,7 +85,7 @@ public class ReactNativeFirebaseMessagingReceiver extends BroadcastReceiver {
     }
   }
 
-  private void sendWakeUpIntent(Context  context, RemoteMessage remoteMessage) throws ClassNotFoundException {
+  private void sendWakeUpIntent(Context context, RemoteMessage remoteMessage, int flagActivity) throws ClassNotFoundException {
     String packageName = context.getPackageName();
     Log.d(TAG, "broadcast received for message: " + packageName);
     Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
@@ -98,7 +95,7 @@ public class ReactNativeFirebaseMessagingReceiver extends BroadcastReceiver {
     Intent activityIntent = new Intent(context, activityClass);
     String entityId = remoteMessage.getData().get("entityId");
     activityIntent.putExtra("entityId", entityId);
-    activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    activityIntent.addFlags(flagActivity);
     context.startActivity(activityIntent);
   }
 }
