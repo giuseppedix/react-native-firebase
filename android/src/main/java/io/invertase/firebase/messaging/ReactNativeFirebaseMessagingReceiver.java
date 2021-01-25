@@ -69,12 +69,12 @@ public class ReactNativeFirebaseMessagingReceiver extends BroadcastReceiver {
       if(startCallType.equals(notifDataType)) {
         this.sendWakeUpIntent(context, remoteMessage, Intent.FLAG_ACTIVITY_NEW_TASK);
       }
-        Intent backgroundIntent = new Intent(context, ReactNativeFirebaseMessagingHeadlessService.class);
-        backgroundIntent.putExtra("message", remoteMessage);
-        ComponentName name = context.startService(backgroundIntent);
-        if (name != null) {
-          HeadlessJsTaskService.acquireWakeLockNow(context);
-        }
+      Intent backgroundIntent = new Intent(context, ReactNativeFirebaseMessagingHeadlessService.class);
+      backgroundIntent.putExtra("message", remoteMessage);
+      ComponentName name = context.startService(backgroundIntent);
+      if (name != null) {
+        HeadlessJsTaskService.acquireWakeLockNow(context);
+      }
     } catch (IllegalStateException | ClassNotFoundException ex) {
       // By default, data only messages are "default" priority and cannot trigger Headless tasks
       Log.e(
@@ -95,6 +95,8 @@ public class ReactNativeFirebaseMessagingReceiver extends BroadcastReceiver {
     Intent activityIntent = new Intent(context, activityClass);
     String entityId = remoteMessage.getData().get("entityId");
     activityIntent.putExtra("entityId", entityId);
+    String notifDataType = remoteMessage.getData().get("notificationType");
+    activityIntent.putExtra("notificationType", notifDataType);
     activityIntent.addFlags(flagActivity);
     context.startActivity(activityIntent);
   }
